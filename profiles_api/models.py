@@ -41,7 +41,7 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     objects = UserProfileManager()
 
     USERNAME_FIELD  = 'email'
-    REQUIRED_FIELD = ["name"]
+    REQUIRED_FIELDS = ["name"]
 
     def get_full_name(self):
         """Returning the full name of the user"""
@@ -50,4 +50,6 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     def get_sort_name(self):
         """Returning the short name of the user"""
         return self.name
+
+        
 
