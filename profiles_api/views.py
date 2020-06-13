@@ -2,8 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 
+
+
+from profiles_api import models
 from profiles_api import serializers
+from profiles_api import permissions
 
 
 class HelloApiView(APIView):
@@ -33,7 +38,9 @@ class HelloApiView(APIView):
 
         if serializer.is_valid():
             name = serializer.validated_data.get('name')
-            message = f'Hello {name}'
+            surName = serializer.validated_data.get('surName')
+            age = serializer.validated_data.get('age')
+            message = f'Hello {surName} { name} with age {age}'
             return Response({'message':message})
 
         else:
@@ -42,20 +49,18 @@ class HelloApiView(APIView):
                 status = status.HTTP_400_BAD_REQUEST
             )
 
+
     def put(self, request, pk=None):
-        """Testing the patch"""
+        """"Testing the put """
         return Response({'method':'PUT'})
 
-    def patch(self, request):
-        """Testing the patch"""
+    def patch(self, request, pk=None):
+        """Testing Patch"""
         return Response({'method':'PATCH'})
 
-    def delete(self, request):
-        """Testing the patch"""
+    def delete(self, request, pk=None):
+        """Testing Delete"""
         return Response({'method':'DELETE'})
-
-
-
 
 class HelloViewSet(viewsets.ViewSet):
     """Testing ViewSet"""
@@ -102,3 +107,12 @@ class HelloViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         """Deleting the object"""
         return Response({'http_method':'DELETE'})
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Handle Creating and updating user profiles"""
+
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.UpdateOwnProfile,)
